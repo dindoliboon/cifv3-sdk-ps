@@ -18,6 +18,19 @@ namespace Cif.V3.Management
     {
         partial void CustomInit()
         {
+            // Ignore SSL certificate errors.
+            this._pipeline = new Cif.V3.Management.Runtime.HttpPipeline(
+				new Cif.V3.Management.Runtime.HttpClientFactory(
+					new HttpClient(
+						new HttpClientHandler() {
+							ServerCertificateCustomValidationCallback = delegate {
+								return true;
+							}
+						}
+					)
+				)
+			);
+
             // we need to add a step at the end of the pipeline
             // to attach the API key
 
