@@ -1,0 +1,761 @@
+swagger: '2.0'
+# https://github.com/csirtgadgets/bearded-avenger-deploymentkit/wiki/REST-API
+#{
+#  "DELETE /tokens?{username,token}": "delete a token or set of tokens", 
+#  "GET /": "this message", 
+#  "GET /feed?{q,limit,itype,confidence,tags,reporttime}": "filter for a data-set, aggregate and apply respective whitelist", 
+#  "GET /help": "this message", 
+#  "GET /help/confidence": "get a list of the defined confidence values", 
+#  "GET /indicators?{q,limit,indicator,confidence,tags,reporttime}": "search for a set of indicators", 
+#  "GET /ping": "ping the router interface", 
+#  "GET /search?{q,limit,itype,indicator,confidence,tags,reporttime}": "search for an indicator", 
+#  "GET /tokens?{username,token}": "search for a set of tokens", 
+#  "GET /u": "browser friendly ui [login with api token]", 
+#  "PATCH /token": "update a token", 
+#  "POST /indicators": "post indicators to the router", 
+#  "POST /tokens": "create a token or set of tokens"
+#}
+schemes:
+  - https
+host: v3.cif.local
+basePath: '/'
+info:
+  description: The CIFv3 REST API
+  title: CIFv3 API
+  version: '0.1'
+  x-preferred: true
+  x-unofficialSpec: true
+securityDefinitions:
+  token:
+    type: apiKey
+    in: header
+    name: Authorization
+security:
+  - token: []
+produces: 
+  - application/json
+consumes: 
+  - application/json
+paths:
+  /tokens:
+    delete:
+      operationId: delete_token
+      description: |
+        delete a token or set of tokens
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DataNumberMessage'
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/DataObjectMessage'
+        '503':
+          description: Service Unavailable
+          schema:
+            $ref: '#/definitions/DataObjectMessage'
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body_json
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+              token:
+                type: string
+      tags:
+        - tokens
+    get:
+      operationId: get_token
+      description: |
+        search for a set of tokens
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/TokenItemArray'
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/DataObjectMessage'
+      consumes:
+        - application/json
+      parameters:
+        - in: query
+          description: username
+          name: username
+          type: string
+        - in: query
+          description: token
+          name: token
+          type: string
+      tags:
+        - tokens
+    post:
+      operationId: create_tokens
+      description: |
+        create a token or set of tokens
+      responses:
+        '201':
+          description: Created
+          schema:
+            $ref: '#/definitions/DataTokenItemMessage'
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/DataObjectMessage'
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body_json
+          schema:
+            type: object
+            required:
+              - username
+            properties:
+              username:
+                type: string
+              admin:
+                type: boolean
+              expires:
+                type: string
+              read:
+                type: boolean
+              revoked:
+                type: string
+              write:
+                type: boolean
+              groups:
+                type: string
+              acl:
+                type: string
+      tags:
+        - tokens
+    patch:
+      operationId: update_token
+      description: |
+        update a token
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DataBooleanMessage'
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/DataObjectMessage'
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body_json
+          schema:
+            type: object
+            required:
+              - token
+              - groups
+            properties:
+              token:
+                type: string
+              groups:
+                type: string
+      tags:
+        - tokens
+  /help:
+    get:
+      operationId: get_help
+      description: |
+        this message
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/KeyPairString'
+      tags:
+        - help
+  /help/confidence:
+    get:
+      operationId: get_confidence
+      description: |
+        get a list of the defined confidence values
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/KeyPairString'
+      tags:
+        - help
+  /ping:
+    get:
+      operationId: get_ping
+      description: |
+        ping the router interface
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DataBooleanMessage'
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/DataObjectMessage'
+  /indicators:
+    get:
+      operationId: get_indicators
+      description: |
+        search for a set of indicators
+      parameters:
+        #- in: query
+        #  name: q
+        #  description: 'The observable to query for.'
+        #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: itype
+        #  description: '(ipv4, ipv6, fqdn, url, email, md5, sha1, sha256)'
+        #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: nolog
+        #  description: 'Do NOT log the query.'
+        #  type: integer
+        #  required: false
+        #  default: 0
+        #- in: query
+        #  name: indicator
+        #  description: 'The observable to query for.'
+        #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: cc
+        #  description: 'The country code to filter on.'
+        #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: asn
+        #  description: 'The ASN to filter on.'
+        #  type: integer
+        #  required: false
+        #  default: 0
+        #- in: query
+        #  name: confidence
+        #  description: 'The confidence (or greater) to filter on.'
+        #  type: number
+        #  required: false
+        #  default: 8
+        #- in: query
+        #  name: group
+        #  description: 'The group(s) to filter on (CSV accepted as OR).'
+        #  type: string
+#-------------------------------------------------------------
+# TODO: Arrays not supported?
+#-------------------------------------------------------------
+        #  #type: array
+        #  #items:
+        #  #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: tags
+        #  description: 'The tag(s) to filter on (CSV accepted as OR).'
+        #  type: string
+#-------------------------------------------------------------
+# TODO: Arrays not supported?
+#-------------------------------------------------------------
+        #  #type: array
+        #  #items:
+        #  #  type: string
+        #  required: false
+        #  default: ''
+        - in: query
+          name: provider
+          description: 'The provider(s) to filter on (CSV accepted as AND).'
+          type: string
+          required: false
+          default: ''
+        #- in: query
+        #  name: description
+        #  description: 'Text description of the observable.'
+        #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: rdata
+        #  description: 'Related data: used mainly by cif-worker when re-injecting intelligence.'
+        #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: reporttime
+        #  description: 'Reported timestamp, (YYYY-MM-DDTHH:MM:SSZ) - Greater than or equal to.'
+        #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: firsttime
+        #  description: 'First seen machine generated timestamp, (YYYY-MM-DDTHH:MM:SSZ) - Greater than or equal to.'
+        #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: lasttime
+        #  description: 'Last seen machine generated timestamp, (YYYY-MM-DDTHH:MM:SSZ) - Less than or equal to.'
+        #  type: string
+        #  required: false
+        #  default: ''
+        - in: query
+          name: limit
+          description: 'Limit the results returned.'
+          type: integer
+          required: false
+          default: 500
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IndicatorItemArray'
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/DataObjectMessage'
+    post:
+      operationId: create_indicators
+      description: |
+        post indicators to the router
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IndicatorItemArray'
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/DataObjectMessage'
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body_json
+          schema:
+            type: object
+            properties:
+              indicator:
+                type: string
+              tags:
+                type: array
+                items:
+                  type: string
+              confidence:
+                type: number
+                default: 0
+              group:
+                type: array
+                items:
+                  type: string
+              tlp:
+                type: string
+              provider:
+                type: string
+  /search:
+    get:
+      operationId: get_search
+      description: |
+        search for an indicator
+      parameters:
+        #- in: query
+        #  name: q
+        #  description: 'The observable to query for.'
+        #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: itype
+        #  description: '(ipv4, ipv6, fqdn, url, email, md5, sha1, sha256)'
+        #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: nolog
+        #  description: 'Do NOT log the query.'
+        #  type: integer
+        #  required: false
+        #  default: 0
+        #- in: query
+        #  name: indicator
+        #  description: 'The observable to query for.'
+        #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: cc
+        #  description: 'The country code to filter on.'
+        #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: asn
+        #  description: 'The ASN to filter on.'
+        #  type: integer
+        #  required: false
+        #  default: 0
+        #- in: query
+        #  name: confidence
+        #  description: 'The confidence (or greater) to filter on.'
+        #  type: number
+        #  required: false
+        #  default: 8
+        #- in: query
+        #  name: group
+        #  description: 'The group(s) to filter on (CSV accepted as OR).'
+        #  type: string
+#-------------------------------------------------------------
+# TODO: Arrays not supported?
+#-------------------------------------------------------------
+        #  #type: array
+        #  #items:
+        #  #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: tags
+        #  description: 'The tag(s) to filter on (CSV accepted as OR).'
+        #  type: string
+#-------------------------------------------------------------
+# TODO: Arrays not supported?
+#-------------------------------------------------------------
+        #  #type: array
+        #  #items:
+        #  #  type: string
+        #  required: false
+        #  default: ''
+        - in: query
+          name: provider
+          description: 'The provider(s) to filter on (CSV accepted as AND).'
+          type: string
+          required: false
+          default: ''
+        #- in: query
+        #  name: description
+        #  description: 'Text description of the observable.'
+        #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: rdata
+        #  description: 'Related data: used mainly by cif-worker when re-injecting intelligence.'
+        #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: reporttime
+        #  description: 'Reported timestamp, (YYYY-MM-DDTHH:MM:SSZ) - Greater than or equal to.'
+        #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: firsttime
+        #  description: 'First seen machine generated timestamp, (YYYY-MM-DDTHH:MM:SSZ) - Greater than or equal to.'
+        #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: lasttime
+        #  description: 'Last seen machine generated timestamp, (YYYY-MM-DDTHH:MM:SSZ) - Less than or equal to.'
+        #  type: string
+        #  required: false
+        #  default: ''
+        - in: query
+          name: limit
+          description: 'Limit the results returned.'
+          type: integer
+          required: false
+          default: 500
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IndicatorItemArray'
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/DataObjectMessage'
+  /feed:
+    get:
+      operationId: get_feed
+      description: |
+        filter for a data-set, aggregate and apply respective whitelist
+      parameters:
+        #- in: query
+        #  name: q
+        #  description: 'The observable to query for.'
+        #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: itype
+        #  description: '(ipv4, ipv6, fqdn, url, email, md5, sha1, sha256)'
+        #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: nolog
+        #  description: 'Do NOT log the query.'
+        #  type: integer
+        #  required: false
+        #  default: 0
+        #- in: query
+        #  name: indicator
+        #  description: 'The observable to query for.'
+        #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: cc
+        #  description: 'The country code to filter on.'
+        #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: asn
+        #  description: 'The ASN to filter on.'
+        #  type: integer
+        #  required: false
+        #  default: 0
+        #- in: query
+        #  name: confidence
+        #  description: 'The confidence (or greater) to filter on.'
+        #  type: number
+        #  required: false
+        #  default: 8
+        #- in: query
+        #  name: group
+        #  description: 'The group(s) to filter on (CSV accepted as OR).'
+        #  type: string
+#-------------------------------------------------------------
+# TODO: Arrays not supported?
+#-------------------------------------------------------------
+        #  #type: array
+        #  #items:
+        #  #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: tags
+        #  description: 'The tag(s) to filter on (CSV accepted as OR).'
+        #  type: string
+#-------------------------------------------------------------
+# TODO: Arrays not supported?
+#-------------------------------------------------------------
+        #  #type: array
+        #  #items:
+        #  #  type: string
+        #  required: false
+        #  default: ''
+        - in: query
+          name: provider
+          description: 'The provider(s) to filter on (CSV accepted as AND).'
+          type: string
+          required: false
+          default: ''
+        #- in: query
+        #  name: description
+        #  description: 'Text description of the observable.'
+        #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: rdata
+        #  description: 'Related data: used mainly by cif-worker when re-injecting intelligence.'
+        #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: reporttime
+        #  description: 'Reported timestamp, (YYYY-MM-DDTHH:MM:SSZ) - Greater than or equal to.'
+        #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: firsttime
+        #  description: 'First seen machine generated timestamp, (YYYY-MM-DDTHH:MM:SSZ) - Greater than or equal to.'
+        #  type: string
+        #  required: false
+        #  default: ''
+        #- in: query
+        #  name: lasttime
+        #  description: 'Last seen machine generated timestamp, (YYYY-MM-DDTHH:MM:SSZ) - Less than or equal to.'
+        #  type: string
+        #  required: false
+        #  default: ''
+        - in: query
+          name: limit
+          description: 'Limit the results returned.'
+          type: integer
+          required: false
+          default: 500
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/IndicatorItemArray'
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/DataObjectMessage'
+tags:
+  - name: tokens
+    description: Token related operations
+  - name: help
+    description: Does not work, throws error
+definitions:
+  DataBooleanMessage:
+    properties:
+      data:
+        type: boolean
+      message:
+        type: string
+    type: object
+  DataTokenItemMessage:
+    properties:
+      data:
+        $ref: "#/definitions/TokenItem"
+      message:
+        type: string
+    type: object
+  TokenItemArray:
+    properties:
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/TokenItem"
+      message:
+        type: string
+    type: object
+  TokenItem:
+    properties:
+      acl:
+        type: string
+      admin:
+        type: boolean
+      expires:
+        type: string
+      groups:
+        items:
+          type: string
+        type: array
+      id:
+        type: number
+      last_activity_at:
+        type: string
+      read:
+        type: boolean
+      revoked:
+        type: boolean
+      token:
+        type: string
+      username:
+        type: string
+      write:
+        type: boolean
+    type: object
+  DataNumberMessage:
+    properties:
+      data:
+        type: number
+        description: number of objects affected
+      message:
+        type: string
+    type: object
+  DataObjectMessage:
+    properties:
+      data:
+        type: object
+      message:
+        type: string
+    type: object
+  KeyPairString:
+    type: object
+#-------------------------------------------------------------
+# TODO: String map not supported?
+#-------------------------------------------------------------
+    #additionalProperties:
+    #  type: string
+  IndicatorItemArray:
+    properties:
+      data:
+        type: array
+        items:
+          $ref: "#/definitions/IndicatorItem"
+      status:
+        type: string
+    type: object
+  IndicatorItem:
+    properties:
+      itype:
+        type: string
+      cc:
+        type: string
+      timezone:
+        type: string
+      protocol:
+        type: string
+      message:
+        items:
+          type: string
+        type: array
+      id:
+        type: number
+      city:
+        type: string
+      indicator:
+        type: string
+      reporttime:
+        type: string
+      group:
+        type: string
+      asn_desc:
+        type: string
+      provider:
+        type: string
+      latitude:
+        type: string
+      description:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+      portlist:
+        type: string
+      confidence:
+        type: number
+      rdata:
+        type: string
+      lasttime:
+        type: string
+      asn:
+        type: string
+      count:
+        type: number
+      peers:
+        type: string
+      tlp:
+        type: string
+      firsttime:
+        type: string
+      region:
+        type: string
+      longitude:
+        type: string
+      additional_data:
+        type: string
+    type: object
