@@ -73,7 +73,7 @@ Invoke-TokenDelete -Username 'testuser'
 ```
 
 # To-Do
-- How to change the host URL in AutoRest?
+- How to change the host URL?
 - Include all available query parameters. When all query parameters are added, the error "Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory" occurs after 45 minutes of compiling. Setting max_old_space_size did not help.
 - Key/value pairs defined with additionalProperties do not work.
 - Query parameters with string arrays do not work.

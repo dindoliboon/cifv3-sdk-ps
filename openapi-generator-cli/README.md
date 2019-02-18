@@ -104,5 +104,5 @@ Invoke-TokenApiDeleteToken -tokensDeleteBody $request
 ```
 
 # To-Do
-- How to change the host URL in AutoRest?
+- How to change the host URL?
 - Expires does not work with Invoke-TokenApiCreateTokens, causes 503 Service Unavailable in bearded-avenger.
