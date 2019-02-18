@@ -40,8 +40,7 @@ paths:
   /tokens:
     delete:
       operationId: delete_token
-      description: |
-        delete a token or set of tokens
+      description: delete a token or set of tokens
       responses:
         '200':
           description: OK
@@ -71,8 +70,7 @@ paths:
         - tokens
     get:
       operationId: get_token
-      description: |
-        search for a set of tokens
+      description: search for a set of tokens
       responses:
         '200':
           description: OK
@@ -97,8 +95,7 @@ paths:
         - tokens
     post:
       operationId: create_tokens
-      description: |
-        create a token or set of tokens
+      description: create a token or set of tokens
       responses:
         '201':
           description: Created
@@ -138,8 +135,7 @@ paths:
         - tokens
     patch:
       operationId: update_token
-      description: |
-        update a token
+      description: update a token
       responses:
         '200':
           description: OK
@@ -169,8 +165,7 @@ paths:
   /help:
     get:
       operationId: get_help
-      description: |
-        this message
+      description: this message
       responses:
         '200':
           description: OK
@@ -181,8 +176,7 @@ paths:
   /help/confidence:
     get:
       operationId: get_confidence
-      description: |
-        get a list of the defined confidence values
+      description: get a list of the defined confidence values
       responses:
         '200':
           description: OK
@@ -193,8 +187,7 @@ paths:
   /ping:
     get:
       operationId: get_ping
-      description: |
-        ping the router interface
+      description: ping the router interface
       responses:
         '200':
           description: OK
@@ -207,8 +200,7 @@ paths:
   /indicators:
     get:
       operationId: get_indicators
-      description: |
-        search for a set of indicators
+      description: search for a set of indicators
       parameters:
         #- in: query
         #  name: q
@@ -329,8 +321,7 @@ paths:
             $ref: '#/definitions/DataObjectMessage'
     post:
       operationId: create_indicators
-      description: |
-        post indicators to the router
+      description: post indicators to the router
       responses:
         '200':
           description: OK
@@ -368,8 +359,7 @@ paths:
   /search:
     get:
       operationId: get_search
-      description: |
-        search for an indicator
+      description: search for an indicator
       parameters:
         #- in: query
         #  name: q
@@ -491,8 +481,7 @@ paths:
   /feed:
     get:
       operationId: get_feed
-      description: |
-        filter for a data-set, aggregate and apply respective whitelist
+      description: filter for a data-set, aggregate and apply respective whitelist
       parameters:
         #- in: query
         #  name: q

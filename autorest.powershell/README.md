@@ -1,22 +1,26 @@
-# Place holder for CIF 3.0 OpenAPI 2.0 YAML
-YAML file to be used with AutoRest to generate a PowerShell module. Does it work? Not really.
+# CIFv3 Swagger 2.0 for AutoRest PowerShell Generator
+Describes CIFv3 API using Swagger 2.0 which can be used with AutoRest to generate a PowerShell module. Does it work? Not really.
 
 # Requirements
-- [Node.js version manager for Windows 1.1.7](https://github.com/coreybutler/nvm-windows/releases/download/1.1.7/nvm-setup.zip)
-- [PowerShell Core 6.1.2](https://github.com/PowerShell/PowerShell/releases/download/v6.1.2/PowerShell-6.1.2-win-x64.msi)
-- [.NET Core SDK 2.2.103](https://dotnet.microsoft.com/download/thank-you/dotnet-sdk-2.2.103-windows-x64-installer)
-- [AutoRest 2.0.4300](https://github.com/Azure/autorest) - Installed with NPM
-- [AutoRest incubator extensions 1.0.132](https://github.com/Azure/autorest.incubator) - Installed with AutoRest
-- [Node.js 10.15.0 LTS](https://nodejs.org) - Installed with NVM
+- [Node Version Switcher](https://github.com/jasongin/nvs)
+- [Node.js](https://nodejs.org) - Installed with NVS
+- [.NET Core SDK](https://dotnet.microsoft.com/download) - Installed with NPM
+- [PowerShell Core](https://github.com/PowerShell/PowerShell) - Installed with NPM
+- [AutoRest](https://github.com/Azure/autorest) - Installed with NPM
 
 # Install
 ```powershell
-# Install and use Node.js 10.15.0 LTS
-nvm install 10.15.0
-nvm use 10.15.0
+# Manually install Node Version Switcher using MSI
+# https://github.com/jasongin/nvs/releases/download/v1.5.2/nvs-1.5.2.msi
 
-# Install the AutoRest package
-npm install -g autorest
+# Install Node.js
+nvs add 10.15.1
+nvs use node/10.15.1/x64
+
+# Install Node.js packages
+npm install -g dotnet-sdk-2.1
+npm install -g pwsh
+npm install -g autorest@beta
 
 # Download and extract this repo to your computer, C:\api\cifv3\
 ```
@@ -24,23 +28,48 @@ npm install -g autorest
 # Build
 ```powershell
 # Generate and build the module
-cd 'C:\api\cifv3'
-autorest --debug --verbose --use=@microsoft.azure/autorest.incubator@preview --namespace=Cif.V3.Management --powershell --clear-output-folder=true --input-file="cifv3.yaml" --output-folder=".\ps"
-. C:\api\cifv3\ps\build-module.ps1
+cd 'C:\api\cifv3\autorest.powershell'
+autorest --debug --verbose --use=@microsoft.azure/autorest.powershell@beta --namespace=Cif.V3.Management --powershell --clear-output-folder=true --input-file="cifv3.yaml" --output-folder=".\ps"
+. C:\api\cifv3\autorest.powershell\ps\build-module.ps1
 ```
+
+# Cmdlets
+| Function               | REST API             | Description
+|------------------------|----------------------|-------------
+| Invoke-TokenDelete     | DELETE /tokens       | Delete a token or set of tokens
+| Invoke-HelpGet         | GET /                | *NOT WORKING* - List of REST API routes
+| Invoke-FeedGet         | GET /feed            | *NOT WORKING* - Filter for a data-set, aggregate and apply respective whitelist
+| Invoke-HelpGet         | GET /help            | *NOT WORKING* - List of REST API routes
+| Invoke-ConfidenceGet   | GET /help/confidence | *NOT WORKING* - Get a list of confidence values
+| Invoke-IndicatorGet    | GET /indicators      | Search for a set of indicators
+| Ping-Get               | GET /ping            | *NOT WORKING* - Ping the router interface
+| Search-Get             | GET /search          | Search for an indicator
+| Invoke-TokenGet        | GET /tokens          | Search for a set of tokens
+| Invoke-TokenUpdate     | PATCH /token         | *NOT WORKING* - Update a token
+| Invoke-IndicatorCreate | POST /indicators     | *NOT WORKING* - Post indicators to the router
+| Invoke-TokenCreate     | POST /tokens         | Create a token or set of tokens
 
 # Usage
 ```powershell
 # Add module to current environment
-Import-Module -Name 'C:\api\cifv3\ps\CIFv3API.psd1'
+$env:CifV3ApiKey='__YOUR_CIFV3_TOKEN__'
+Import-Module -Name 'C:\api\cifv3\autorest.powershell\ps\CIFv3API.psd1'
 $DebugPreference = 'Continue'
 
-# See available cmdlets
 (Get-Module -Name CIFv3API).ExportedCommands
 
 # Retrieve indicators
-$env:CifV3ApiKey='Token token=__YOUR_CIFV3_TOKEN__'
-Invoke-IndicatorGet -Provider 'org-chn' -Limit 10
+(Search-Get -provider 'org-chn' -limit 5).Data | Select Indicator,FirstTime
+(Invoke-IndicatorGet -provider 'org-chn' -limit 5).Data | Select Indicator,FirstTime
+
+# Get tokens
+(Invoke-TokenGet).Data
+
+# Create token for reading data
+(Invoke-TokenCreate -Username 'testuser' -Read).Data
+
+# Delete all tokens associated with user testuser
+Invoke-TokenDelete -Username 'testuser'
 ```
 
 # To-Do

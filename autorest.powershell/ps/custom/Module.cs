@@ -1,4 +1,4 @@
-// https://github.com/Azure/autorest.incubator/blob/master/Examples/TimesWire/generated/private/custom/Module.cs
+// https://github.com/Azure/autorest.powershell/blob/master/samples/TimesWire/generated/private/custom/Module.cs
 namespace Cif.V3.Management
 {
     using Runtime;
@@ -11,7 +11,7 @@ namespace Cif.V3.Management
     /// <summary>A class that contains the module-common code and data.</summary>
     /// <notes>
     /// This class is where you can add things to modify the module.
-    /// As long as it's in the 'private/custom' folder, it won't get deleted
+    /// As long as it's in the 'custom' folder, it won't get deleted
     /// when you use --clear-output-folder in autorest.
     /// </notes>
     public partial class Module
