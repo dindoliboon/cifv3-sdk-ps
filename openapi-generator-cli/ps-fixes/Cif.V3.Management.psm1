@@ -22,19 +22,25 @@ if ($PSEdition -eq 'Desktop')
     [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $true }
 }
 
+$defaultBasePath = 'https://localhost'
+if ($null -ne $env:CifV3ApiUri)
+{
+    $defaultBasePath = $env:CifV3ApiUri
+}
+
 'Creating object: Cif.V3.Management.Api.HealthApi' | Write-Verbose
-$Script:HealthApi= New-Object -TypeName Cif.V3.Management.Api.HealthApi -ArgumentList @($null)
+$Script:HealthApi= New-Object -TypeName Cif.V3.Management.Api.HealthApi -ArgumentList @($defaultBasePath)
 $Script:HealthApi.Configuration.AddApiKey('Authorization', 'Token token=' + $env:CifV3ApiKey)
 
 'Creating object: Cif.V3.Management.Api.HelpApi' | Write-Verbose
-$Script:HelpApi= New-Object -TypeName Cif.V3.Management.Api.HelpApi -ArgumentList @($null)
+$Script:HelpApi= New-Object -TypeName Cif.V3.Management.Api.HelpApi -ArgumentList @($defaultBasePath)
 
 'Creating object: Cif.V3.Management.Api.IndicatorsApi' | Write-Verbose
-$Script:IndicatorsApi= New-Object -TypeName Cif.V3.Management.Api.IndicatorsApi -ArgumentList @($null)
+$Script:IndicatorsApi= New-Object -TypeName Cif.V3.Management.Api.IndicatorsApi -ArgumentList @($defaultBasePath)
 $Script:IndicatorsApi.Configuration.AddApiKey('Authorization', 'Token token=' + $env:CifV3ApiKey)
 
 'Creating object: Cif.V3.Management.Api.TokenApi' | Write-Verbose
-$Script:TokenApi= New-Object -TypeName Cif.V3.Management.Api.TokenApi -ArgumentList @($null)
+$Script:TokenApi= New-Object -TypeName Cif.V3.Management.Api.TokenApi -ArgumentList @($defaultBasePath)
 $Script:TokenApi.Configuration.AddApiKey('Authorization', 'Token token=' + $env:CifV3ApiKey)
 
 #endregion
