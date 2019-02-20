@@ -10,35 +10,38 @@ Describes CIFv3 API using OpenAPI 3.0 which can be used with OpenAPI Generator.
 ```powershell
 # Download and extract this repo to your computer, C:\api\cifv3\
 
+$apiRoot = 'C:\api\cifv3'
+$apiName = 'Cif.V3.Management'
+
 # Update openapi-generator-cli PowerShell template to allow nullable variables
-docker run --rm --volume C:\api\cifv3\openapi-generator-cli\update-openapi-generator-cli:/mnt/tmp openapitools/openapi-generator-cli sh -c "cp /opt/openapi-generator/modules/openapi-generator-cli/target/*.jar /mnt/tmp/bin"
-docker run -it --rm --volume C:\api\cifv3\openapi-generator-cli\update-openapi-generator-cli:/mnt/tmp crazymax/7zip sh -c "cd /mnt/tmp && 7z u bin/openapi-generator-cli.jar powershell"
+docker run --rm --volume $apiRoot\openapi-generator-cli\update-openapi-generator-cli:/mnt/tmp openapitools/openapi-generator-cli sh -c "cp /opt/openapi-generator/modules/openapi-generator-cli/target/*.jar /mnt/tmp/bin"
+docker run -it --rm --volume $apiRoot\openapi-generator-cli\update-openapi-generator-cli:/mnt/tmp crazymax/7zip sh -c "cd /mnt/tmp && 7z u bin/openapi-generator-cli.jar powershell"
 
 # Generate PowerShell and C# clients
-docker run --rm --volume C:\api\cifv3\openapi-generator-cli:/local --volume C:\api\cifv3\openapi-generator-cli\update-openapi-generator-cli\bin\openapi-generator-cli.jar:/opt/openapi-generator/modules/openapi-generator-cli/target/openapi-generator-cli.jar openapitools/openapi-generator-cli generate --generator-name powershell --input-spec /local/cifv3.yaml --output /local/ps --additional-properties packageName=Cif.V3.Management
-docker run --rm --volume C:\api\cifv3\openapi-generator-cli:/local openapitools/openapi-generator-cli generate --generator-name csharp --input-spec /local/cifv3.yaml --output /local/ps/csharp/OpenAPIClient --additional-properties packageName=Cif.V3.Management,packageVersion=0.0.2,targetFramework=v5.0,netCoreProjectFile=true
+docker run --rm --volume $apiRoot\openapi-generator-cli:/local --volume $apiRoot\openapi-generator-cli\update-openapi-generator-cli\bin\openapi-generator-cli.jar:/opt/openapi-generator/modules/openapi-generator-cli/target/openapi-generator-cli.jar openapitools/openapi-generator-cli generate --generator-name powershell --input-spec /local/cifv3.yaml --output /local/ps --additional-properties packageName=$apiName
+docker run --rm --volume $apiRoot\openapi-generator-cli:/local openapitools/openapi-generator-cli generate --generator-name csharp --input-spec /local/cifv3.yaml --output /local/ps/csharp/OpenAPIClient --additional-properties packageName=$apiName,packageVersion=0.0.3,targetFramework=v5.0,netCoreProjectFile=true
 
 # Create Windows binary with dependencies
-cd "C:\api\cifv3\openapi-generator-cli\ps\csharp\OpenAPIClient"
+cd "$apiRoot\openapi-generator-cli\ps\csharp\OpenAPIClient"
 dotnet publish --configuration=release --runtime win-x64
 
 # Move default namespace files
-Move-Item -Path 'C:\api\cifv3\openapi-generator-cli\ps\src\Org.OpenAPITools\*' -Destination 'C:\api\cifv3\openapi-generator-cli\ps\src\Cif.V3.Management' -Force
-Remove-Item -Path 'C:\api\cifv3\openapi-generator-cli\ps\src\Org.OpenAPITools' -Recurse
+Move-Item -Path "$apiRoot\openapi-generator-cli\ps\src\Org.OpenAPITools\*" -Destination "$apiRoot\openapi-generator-cli\ps\src\$apiName" -Force
+Remove-Item -Path "$apiRoot\openapi-generator-cli\ps\src\Org.OpenAPITools" -Recurse
 
 # Copy C# binaries for PowerShell
-New-Item -Path 'C:\api\cifv3\openapi-generator-cli\ps\src\Cif.V3.Management\Bin' -ItemType Directory -Force
-Copy-Item -Path 'C:\api\cifv3\openapi-generator-cli\ps\csharp\OpenAPIClient\src\Cif.V3.Management\bin\Release\netstandard1.3\win-x64\publish\*.dll' -Destination 'C:\api\cifv3\openapi-generator-cli\ps\src\Cif.V3.Management\Bin\'
+New-Item -Path "$apiRoot\openapi-generator-cli\ps\src\$apiName\Bin" -ItemType Directory -Force
+Copy-Item -Path "$apiRoot\openapi-generator-cli\ps\csharp\OpenAPIClient\src\$apiName\bin\Release\netstandard1.3\win-x64\publish\*.dll" -Destination "$apiRoot\openapi-generator-cli\ps\src\$apiName\Bin\"
 
 # Hide errors when using .NET Core
-New-Item -Path 'C:\api\cifv3\openapi-generator-cli\ps\csharp\OpenAPIClient\bin' -ItemType Directory -Force
-'@ECHO OFF' | Out-File -FilePath 'C:\api\cifv3\openapi-generator-cli\ps\csharp\OpenAPIClient\build.bat' -Encoding ascii
+New-Item -Path "$apiRoot\openapi-generator-cli\ps\csharp\OpenAPIClient\bin" -ItemType Directory -Force
+'@ECHO OFF' | Out-File -FilePath "$apiRoot\openapi-generator-cli\ps\csharp\OpenAPIClient\build.bat" -Encoding ascii
 
 # Add fixes (authentication)
-Copy-Item -Path 'C:\api\cifv3\openapi-generator-cli\ps-fixes\Cif.V3.Management.psm1' -Destination 'C:\api\cifv3\openapi-generator-cli\ps\src\Cif.V3.Management\'
+Copy-Item -Path "$apiRoot\openapi-generator-cli\ps-fixes\$apiName.psm1" -Destination "$apiRoot\openapi-generator-cli\ps\src\$apiName\"
 
 # Build PowerShell module
-cd "C:\api\cifv3\openapi-generator-cli\ps"
+cd "$apiRoot\openapi-generator-cli\ps"
 .\Build.ps1
 ```
 
