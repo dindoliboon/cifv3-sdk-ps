@@ -16,10 +16,11 @@ $apiName = 'Cif.V3.Management'
 # Update openapi-generator-cli PowerShell template to allow nullable variables
 docker run --rm --volume $apiRoot\openapi-generator-cli\update-openapi-generator-cli:/mnt/tmp openapitools/openapi-generator-cli sh -c "cp /opt/openapi-generator/modules/openapi-generator-cli/target/*.jar /mnt/tmp/bin"
 docker run -it --rm --volume $apiRoot\openapi-generator-cli\update-openapi-generator-cli:/mnt/tmp crazymax/7zip sh -c "cd /mnt/tmp && 7z u bin/openapi-generator-cli.jar powershell"
+docker run -it --rm --volume $apiRoot\openapi-generator-cli\update-openapi-generator-cli:/mnt/tmp crazymax/7zip sh -c "cd /mnt/tmp && 7z u bin/openapi-generator-cli.jar csharp"
 
 # Generate PowerShell and C# clients
 docker run --rm --volume $apiRoot\openapi-generator-cli:/local --volume $apiRoot\openapi-generator-cli\update-openapi-generator-cli\bin\openapi-generator-cli.jar:/opt/openapi-generator/modules/openapi-generator-cli/target/openapi-generator-cli.jar openapitools/openapi-generator-cli generate --generator-name powershell --input-spec /local/cifv3.yaml --output /local/ps --additional-properties packageName=$apiName
-docker run --rm --volume $apiRoot\openapi-generator-cli:/local openapitools/openapi-generator-cli generate --generator-name csharp --input-spec /local/cifv3.yaml --output /local/ps/csharp/OpenAPIClient --additional-properties packageName=$apiName,packageVersion=0.0.4,targetFramework=v5.0,netCoreProjectFile=true
+docker run --rm --volume $apiRoot\openapi-generator-cli:/local --volume $apiRoot\openapi-generator-cli\update-openapi-generator-cli\bin\openapi-generator-cli.jar:/opt/openapi-generator/modules/openapi-generator-cli/target/openapi-generator-cli.jar openapitools/openapi-generator-cli generate --generator-name csharp --input-spec /local/cifv3.yaml --output /local/ps/csharp/OpenAPIClient --additional-properties packageName=$apiName,packageVersion=0.0.4,targetFramework=v5.0,netCoreProjectFile=true
 
 # Create Windows binary with dependencies
 cd "$apiRoot\openapi-generator-cli\ps\csharp\OpenAPIClient"
