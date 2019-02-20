@@ -34,9 +34,8 @@ Copy-Item -Path 'C:\api\cifv3\openapi-generator-cli\ps\csharp\OpenAPIClient\src\
 New-Item -Path 'C:\api\cifv3\openapi-generator-cli\ps\csharp\OpenAPIClient\bin' -ItemType Directory -Force
 '@ECHO OFF' | Out-File -FilePath 'C:\api\cifv3\openapi-generator-cli\ps\csharp\OpenAPIClient\build.bat' -Encoding ascii
 
-# Add fixes (authentication and replacement API calls)
+# Add fixes (authentication)
 Copy-Item -Path 'C:\api\cifv3\openapi-generator-cli\ps-fixes\Cif.V3.Management.psm1' -Destination 'C:\api\cifv3\openapi-generator-cli\ps\src\Cif.V3.Management\'
-Copy-Item -Path 'C:\api\cifv3\openapi-generator-cli\ps-fixes\HealthApi.ps1' -Destination 'C:\api\cifv3\openapi-generator-cli\ps\src\Cif.V3.Management\API\'
 
 # Build PowerShell module
 cd "C:\api\cifv3\openapi-generator-cli\ps"
@@ -105,4 +104,4 @@ Invoke-TokenApiDeleteToken -tokensDeleteBody $request
 
 # To-Do
 - How to change the host URL?
-- Expires does not work with Invoke-TokenApiCreateTokens, causes 503 Service Unavailable in bearded-avenger.
+- Expires does not work with Invoke-TokenApiCreateTokens, causes 503 Service Unavailable. Possible issue with bearded-avenger.

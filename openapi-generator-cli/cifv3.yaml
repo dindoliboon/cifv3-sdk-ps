@@ -634,14 +634,9 @@ paths:
   /ping:
     get:
       description: |
-        **TODO** **NOT WORKING** ping the router interface
-        Exception calling "GetPing" with "0" argument(s): "Error calling GetPing: "
-        At ps-client\src\Cif.V3.Management\API\HealthApi.ps1:10 char:9
-        +         $Script:HealthApi.GetPing(
-        +         ~~~~~~~~~~~~~~~~~~~~~~~~~~
-        + CategoryInfo          : NotSpecified: (:) [], MethodInvocationException
-        + FullyQualifiedErrorId : ApiException
       operationId: get_ping
+      security:
+        - AuthorizationApiKeyHeader: []
       responses:
         '200':
           description: OK
