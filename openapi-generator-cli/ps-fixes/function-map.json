@@ -1,0 +1,13 @@
+{
+    "Invoke-TokenApiDeleteToken": "Remove-CifToken",
+    "Invoke-IndicatorsApiGetFeed": "Get-CifFeed",
+    "Invoke-HelpApiGetHelp": "Get-CifHelp",
+    "Invoke-HelpApiGetHelpConfidence": "Get-CifConfidence",
+    "Invoke-IndicatorsApiGetIndicators": "Get-CifIndicator",
+    "Invoke-HealthApiGetPing": "Get-CifPing",
+    "Invoke-IndicatorsApiGetSearch": "Get-CifSearch",
+    "Invoke-TokenApiGetToken": "Get-CifToken",
+    "Invoke-TokenApiUpdateToken": "Set-CifToken",
+    "Invoke-IndicatorsApiCreateIndicators": "New-CifIndicator",
+    "Invoke-TokenApiCreateTokens": "New-CifToken"
+}

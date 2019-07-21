@@ -2,6 +2,7 @@
 {{#model}}
 function New-{{{classname}}} {
     [CmdletBinding()]
+    #TODO#[Alias('New-{{{classname}}}')]
     Param (
 {{#vars}}
         [Parameter(Position = {{vendorExtensions.x-index}}, ValueFromPipelineByPropertyName = $true{{#required}}, Mandatory = $true{{/required}})]

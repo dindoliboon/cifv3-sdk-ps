@@ -2,6 +2,7 @@
 {{#operation}}
 function Invoke-{{{classname}}}{{{operationId}}} {
     [CmdletBinding()]
+    #TODO#[Alias('Invoke-{{{classname}}}{{{operationId}}}')]
     Param (
     {{#allParams}}
         [Parameter(Position = {{vendorExtensions.x-index}}, ValueFromPipeline = $true, ValueFromPipelineByPropertyName = $true, Mandatory = {{#required}}$true{{/required}}{{^required}}$false{{/required}})]
@@ -13,7 +14,7 @@ function Invoke-{{{classname}}}{{{operationId}}} {
     )
 
     Process {
-        'Calling method: {{{classname}}}-{{{operationId}}}' | Write-Verbose
+        'Calling method: Invoke-{{{classname}}}{{{operationId}}}' | Write-Verbose
         $PSBoundParameters | Out-DebugParameter | Write-Debug
 
         $Script:{{{classname}}}.{{{operationId}}}(
