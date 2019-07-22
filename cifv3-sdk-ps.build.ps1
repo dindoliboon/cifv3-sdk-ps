@@ -149,7 +149,7 @@ task BuildPsModule {
     $psScriptBlock | Out-File -FilePath $psModuleFile -Encoding utf8NoBOM -Append
     Get-Content -Path (Join-Path -Path $PSScriptRoot -ChildPath 'openapi-generator-cli/ps-fixes/_SuffixCode.ps1') -Raw | Out-File -FilePath $psModuleFile -Encoding utf8NoBOM -Append
 
-    Copy-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath 'LICENSE.md') -Destination $psModulePath -Force
+    Copy-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath 'LICENSE') -Destination (Join-Path -Path $psModulePath -ChildPath 'LICENSE.md') -Force
 }
 
 task . Clean, Build
