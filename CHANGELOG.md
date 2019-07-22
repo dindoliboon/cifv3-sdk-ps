@@ -47,5 +47,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial version.
 
 [Unreleased]: https://github.com/dindoliboon/cifv3-sdk-ps/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/dindoliboon/cifv3-sdk-ps/compare/v0.0.4..v1.0.0
+[0.1.0]: https://github.com/dindoliboon/cifv3-sdk-ps/compare/v0.0.4..v0.1.0
 [0.0.4]: https://github.com/dindoliboon/cifv3-sdk-ps/releases/tag/v0.0.4
