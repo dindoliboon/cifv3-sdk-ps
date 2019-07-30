@@ -69,7 +69,7 @@ Start the build by running the following command from the project root:
 PS> Invoke-Build
 ```
 
-This will package all code into files located in .\bin\bin\Cif.V3.Management\0.1.0. That folder is now ready to be installed, copy to any path listed in you PSModulePath environment variable and you are good to go!
+This will package all code into files located in .\bin\bin\Cif.V3.Management\0.1.1. That folder is now ready to be installed, copy to any path listed in you PSModulePath environment variable and you are good to go!
 
 ## Cmdlets
 
@@ -87,14 +87,14 @@ This will package all code into files located in .\bin\bin\Cif.V3.Management\0.1
 | Invoke-TokenApiUpdateToken           | Set-CifToken      | PATCH /token         | Update a token
 | Invoke-IndicatorsApiCreateIndicators | New-CifIndicator  | POST /indicators     | Post indicators to the router
 | Invoke-TokenApiCreateTokens          | New-CifToken      | POST /tokens         | Create a token or set of tokens
+| Connect-CifService                   |                   |                      | Set API URL and API key
 
 ## Usage
 
 ```PowerShell
 # Add module to current environment
-$env:CifV3ApiUri = 'https://v3.cif.local'
-$env:CifV3ApiKey = '__YOUR_CIFV3_TOKEN__'
 Import-Module -Name Cif.V3.Management
+Connect-CifService -ApiUri 'https://v3.cif.local' -ApiToken '__YOUR_CIFV3_TOKEN__'
 
 # Get router status
 Get-CifPing
@@ -136,7 +136,7 @@ Remove-CifToken -tokensDeleteBody $request
 
 ## To-Do
 
-- ~~How to change the host URL?~~ Use $env:CifV3ApiUri
+- ~~How to change the host URL?~~ Use $env:CifV3ApiUri or Connect-CifService.
 - Expires does not work with Invoke-TokenApiCreateTokens, causes 503 Service Unavailable. Possible issue with bearded-avenger.
 
 ## Release history

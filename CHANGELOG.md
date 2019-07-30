@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2019-07-29
+
+### Added
+
+- Added Connect-CifService to setup API URL and key after import.
+
+### Changed
+
+- Environment variable CifV3ApiUri and CifV3ApiKey not mandatory before importing the module.
+
 ## [0.1.0] - 2019-07-20
 
 ### Added
@@ -46,6 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial version.
 
-[Unreleased]: https://github.com/dindoliboon/cifv3-sdk-ps/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/dindoliboon/cifv3-sdk-ps/compare/v0.1.1...HEAD
+[0.1.1]: https://github.com/dindoliboon/cifv3-sdk-ps/compare/v0.1.0..v0.1.1
 [0.1.0]: https://github.com/dindoliboon/cifv3-sdk-ps/compare/v0.0.4..v0.1.0
 [0.0.4]: https://github.com/dindoliboon/cifv3-sdk-ps/releases/tag/v0.0.4

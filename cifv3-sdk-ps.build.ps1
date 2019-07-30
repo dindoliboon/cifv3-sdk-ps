@@ -4,7 +4,7 @@ $Script:ModuleName = Get-Item -Path $BuildRoot | Select-Object -ExpandProperty N
 Get-Module -Name $ModuleName | Remove-Module -Force
 
 $Script:apiName           = 'Cif.V3.Management'
-$Script:apiVersion        = '0.1.0'
+$Script:apiVersion        = '0.1.1'
 $Script:powerShellVersion = '5.0'
 $Script:author            = 'Dindo Liboon'
 $Script:moduleGuid        = 'f9efee84-ba4b-4114-9c5c-fa0e60106c3f'
@@ -25,6 +25,15 @@ task Clean {
     Write-Build Yellow "`n`n`nRemoving bin folder"
 
     Remove-Item -Path $binRootPath -Recurse -Force -ErrorAction SilentlyContinue
+}
+
+task IsDockerRunning {
+    Write-Build Yellow "`n`n`nCheck if docker is running"
+
+    $docker = & docker ps -a 2>&1
+    if ($docker -like '* Is the docker daemon running?') {
+        throw 'Ensure the Docker daemon is running correctly and you have proper permissions.'
+    }
 }
 
 task BuildOpenApiGeneratorCli {
@@ -94,13 +103,17 @@ task BuildPsModule {
 
     New-Item -Path (Join-Path -Path $psModulePath -ChildPath 'lib') -ItemType Directory -Force
 
+    # Copy compiled binaries.
     Copy-Item -Path (Join-Path -Path $srcChildPath -ChildPath "openapi-csharp/src/${apiName}/bin/release/netstandard2.0/publish/*") -Destination (Join-Path -Path $psModulePath -ChildPath 'lib') -Recurse -Force
+
+    # Copy user provided public PowerShell scripts.
+    Copy-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath "openapi-generator-cli/ps-fixes/Public/*") -Destination (Join-Path -Path $srcChildPath -ChildPath 'openapi-ps/src/Org.OpenAPITools') -Recurse -Force
 
     Write-Build Yellow "`n`n`nFinding public functions and aliases"
 
     $SearchRecursive = $true
     $SearchRootOnly  = $false
-    $PublicScriptBlock = [ScriptBlock]::Create('{0}' -f (Get-ChildItem -Path (Join-Path -Path $srcChildPath -ChildPath '/openapi-ps/src/Org.OpenAPITools') -File -Filter *.ps1 -Recurse -ErrorAction SilentlyContinue | Get-Content -Raw | Out-String))
+    $PublicScriptBlock = [ScriptBlock]::Create('{0}' -f (Get-ChildItem -Path (Join-Path -Path $srcChildPath -ChildPath 'openapi-ps/src/Org.OpenAPITools') -File -Filter *.ps1 -Recurse -ErrorAction SilentlyContinue | Get-Content -Raw | Out-String))
     $PublicFunctions = $PublicScriptBlock.Ast.FindAll({ $args[0] -is [System.Management.Automation.Language.FunctionDefinitionAst]}, $SearchRootOnly).Name
     $PublicAlias = $PublicScriptBlock.Ast.FindAll({ $args[0] -is [System.Management.Automation.Language.ParamBlockAst] }, $SearchRecursive) | Select-Object -ExpandProperty Attributes | Where-Object { $_.TypeName.FullName -eq 'Alias' } | ForEach-Object { $_.PositionalArguments.Value }
 
@@ -152,6 +165,6 @@ task BuildPsModule {
     Copy-Item -Path (Join-Path -Path $PSScriptRoot -ChildPath 'LICENSE') -Destination (Join-Path -Path $psModulePath -ChildPath 'LICENSE.md') -Force
 }
 
-task . Clean, Build
+task . Clean, IsDockerRunning, Build
 
 task Build BuildOpenApiGeneratorCli, BuildClients, UpgradeDotNetStandard, ApplyAliasMapping, BuildPsModule
