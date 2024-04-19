@@ -1,3 +1,7 @@
+#### :warning: This repository has been archived. If you need a CIFv3 client for PowerShell, see [CIF3-pwsh](https://github.com/renisac/CIF3-pwsh).
+
+---
+
 # CIFv3 Swagger/OpenAPI Specification
 
 ## Description
